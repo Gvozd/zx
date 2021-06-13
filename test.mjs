@@ -139,4 +139,56 @@ import {strict as assert} from 'assert'
 //   console.log(chalk.black.bgYellowBright(` ${name} version is ${version} `))
 // }
 
+{ // interactive mode
+  { // input format
+    { // empty
+      { // empty command
+        assert.equal(// without trailing newline
+          (await $`printf "" | node zx.mjs -i`).stdout,
+          '$ ',
+        )
+      }
+
+      { // empty line
+        assert.equal(// without trailing newline
+          (await $`printf "\n" | node zx.mjs -i`).stdout,
+          '$ $ ',
+        )
+      }
+    }
+
+    { // one-lined commands
+      { // one command
+        assert.equal(
+          (await $`printf '1 + 2' | node zx.mjs -i`).stdout,
+          '$ 3\n$ ',
+        )
+      }
+
+      { // multiple commands
+        assert.equal(
+          (await $`printf '1 + 2\n3+4' | node zx.mjs -i`).stdout,
+          '$ 3\n$ 7\n$ ',
+        )
+      }
+    }
+
+    { // multiline command
+      { // without trailing newline
+        assert.equal(
+          (await $`printf "1 + \n2" | node zx.mjs -i`).stdout,
+          '$ ... 3\n$ ',
+        )
+      }
+
+      { // with trailing newline
+        assert.equal(
+          (await $`printf "1 + \n2\n" | node zx.mjs -i`).stdout,
+          '$ ... 3\n$ ',
+        )
+      }
+    }
+  }
+}
+
 console.log(chalk.greenBright(' 🍺 Success!'))

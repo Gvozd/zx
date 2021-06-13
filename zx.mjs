@@ -29,6 +29,12 @@ try {
     process.exit(0)
   }
 
+  if (['-i'].includes(firstArg)) {
+    const repl = await import('./repl.mjs')
+    await repl.done
+    process.exit(0)
+  }
+
   if (typeof firstArg === 'undefined' || firstArg[0] === '-') {
     let ok = await scriptFromStdin()
     if (!ok) {
