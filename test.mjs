@@ -143,21 +143,28 @@ import {strict as assert} from 'assert'
   { // input format
     { // empty
       { // empty command
-        assert.equal(// without trailing newline
+        assert.equal(
           (await $`printf "" | node zx.mjs -i`).stdout,
           '$ ',
         )
       }
 
       { // empty line
-        assert.equal(// without trailing newline
+        assert.equal(
           (await $`printf "\n" | node zx.mjs -i`).stdout,
-          '$ undefined\n$ ',// TODO BUG. expected '$ $ '
+          '$ $ ',
         )
       }
     }
 
     { // one-lined commands
+      { // void result
+        assert.equal(
+          (await $`printf "void 0" | node zx.mjs -i`).stdout,
+          '$ undefined\n$ ',
+        )
+      }
+
       { // one command
         assert.equal(
           (await $`printf '1 + 2' | node zx.mjs -i`).stdout,
