@@ -5,13 +5,16 @@ import {join} from 'path'
 import {homedir} from 'os'
 
 const useGlobal = true
-const {eval: _eval} = getDonorReplServer()
+const {eval: _eval, _domain} = getDonorReplServer()
 const promisifiedEval = promisify(_eval)
 
 const replServer = replStart({
   prompt: '$ ',
   eval: myEval,
   useGlobal,
+})
+_domain.on('error', (error) => {
+  replServer._domain.emit('error', error)
 })
 
 await promisify(replServer.setupHistory)

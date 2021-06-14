@@ -240,7 +240,22 @@ import {strict as assert} from 'assert'
       { // ReferenceError
         assert.equal(
           (await $`printf 'foo()' | node zx.mjs -i`).stdout,
-          '$ Uncaught ReferenceError: foo is not defined\n$ $ ', // TODO - why is there a trailing prompt?
+          '$ Uncaught ReferenceError: foo is not defined\n$ ',
+        )
+      }
+    }
+
+    { // async errors
+      { // awaited promise rejection
+        assert.equal(
+          (await $`printf 'Promise.reject("foo")' | node zx.mjs -i`).stdout,
+          '$ Uncaught \'foo\'\n$ $ ', // TODO - why is there a trailing prompt?
+        )
+      }
+      { // not awaited errors at event loop
+        assert.equal(
+          (await $`printf 'setTimeout(() => {throw "foo"});void 0;' | node zx.mjs -i`).stdout,
+          '$ undefined\n$ Uncaught \'foo\'\n$ ',
         )
       }
     }
