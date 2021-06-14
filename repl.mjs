@@ -13,9 +13,6 @@ const replServer = replStart({
   eval: myEval,
   useGlobal,
 })
-export const done = new Promise(resolve => {
-  replServer.once('exit', resolve)
-})
 
 await promisify(replServer.setupHistory)
   .call(replServer, join(homedir(), '.zx_history'))

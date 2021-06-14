@@ -198,7 +198,7 @@ import {strict as assert} from 'assert'
       )
       assert.equal( // without trailing newline
         (await $`printf 'Promise.resolve(3)' | node zx.mjs -i`).stdout,
-        '$ ', // TODO BUG. expected '$ 3\n$ '
+        '$ 3\n$ ',
       )
     }
 
@@ -206,6 +206,18 @@ import {strict as assert} from 'assert'
       assert.equal(
         (await $`printf 'Promise.reject("foo")\n' | node zx.mjs -i`).stdout,
         '$ Uncaught \'foo\'\n$ $ ', // TODO - why is there a trailing prompt?
+      )
+    }
+    { // long executed promise
+      assert.equal(
+        (await $`printf 'new Promise(resolve => setTimeout(resolve, 100, "foo"))' | node zx.mjs -i`).stdout,
+        '$ \'foo\'\n$ ',
+      )
+    }
+    { // long executed, not awaited operation
+      assert.equal(
+        (await $`printf 'setTimeout(() => console.log("foo"), 100);void 0;' | node zx.mjs -i`).stdout,
+        '$ undefined\n$ foo\n',
       )
     }
   }
