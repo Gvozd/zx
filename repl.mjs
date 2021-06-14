@@ -40,6 +40,7 @@ function getDonorReplServer() {
     output: socket,
     useGlobal,
   })
+  replServer.eval.domain.removeAllListeners('error')
   replServer.close()
 
   return replServer

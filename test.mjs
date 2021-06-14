@@ -209,6 +209,30 @@ import {strict as assert} from 'assert'
       )
     }
   }
+
+  { // errors processing
+    { // sync errors
+      { // SyntaxError
+        assert.equal(
+          (await $`printf 'foo bar' | node zx.mjs -i`).stdout,
+          [
+            '$ foo bar',
+            '    ^^^',
+            '',
+            'Uncaught SyntaxError: Unexpected identifier',
+            '$ $ ', // TODO - why is there a trailing prompt?
+          ].join('\n'),
+        )
+      }
+
+      { // ReferenceError
+        assert( // TODO BUG. the full stack is displayed
+          (await $`printf 'foo()' | node zx.mjs -i`).stdout
+            .includes('ReferenceError: foo is not defined'),
+        )
+      }
+    }
+  }
 }
 
 console.log(chalk.greenBright(' 🍺 Success!'))
