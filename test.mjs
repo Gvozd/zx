@@ -226,17 +226,9 @@ import {strict as assert} from 'assert'
       }
 
       { // ReferenceError
-        assert.equal(// TODO BUG. the excess stack is displayed
+        assert.equal(
           (await $`printf 'foo()' | node zx.mjs -i`).stdout,
-          [
-            '$ Uncaught ReferenceError: foo is not defined',
-            '    at REPL1:1:1',
-            '    at Script.runInThisContext (vm.js:133:18)',
-            '    at REPLServer.defaultEval (repl.js:486:29)',
-            '    at bound (domain.js:416:15)',
-            '    at REPLServer.runBound (domain.js:427:12)',
-            '$ $ ',
-          ].join('\n'),
+          '$ Uncaught ReferenceError: foo is not defined\n$ $ ', // TODO - why is there a trailing prompt?
         )
       }
     }

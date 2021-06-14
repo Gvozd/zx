@@ -22,7 +22,12 @@ await promisify(replServer.setupHistory)
 
 async function myEval(cmd, context, filename, callback) {
   try {
-    const result = await promisifiedEval.call(this, cmd, context, filename)
+    const result = await new Promise(function executor(resolve, reject) {
+      _eval.call(this, cmd, context, filename, function (err, res) {
+        if (err) reject(err)
+        else resolve(res)
+      })
+    })
 
     callback(null, result)
   } catch (e) {
