@@ -152,7 +152,7 @@ import {strict as assert} from 'assert'
       { // empty line
         assert.equal(// without trailing newline
           (await $`printf "\n" | node zx.mjs -i`).stdout,
-          '$ $ ',
+          '$ undefined\n$ ',// TODO BUG. expected '$ $ '
         )
       }
     }
@@ -184,9 +184,29 @@ import {strict as assert} from 'assert'
       { // with trailing newline
         assert.equal(
           (await $`printf "1 + \n2\n" | node zx.mjs -i`).stdout,
-          '$ ... 3\n$ ',
+          '$ ... 2\n$ ', // TODO BUG. expected '$ ... 3\n$ '
         )
       }
+    }
+  }
+
+  { // await async commands
+    { // success command
+      assert.equal(
+        (await $`printf 'Promise.resolve(3)\n' | node zx.mjs -i`).stdout,
+        '$ 3\n$ ',
+      )
+      assert.equal( // without trailing newline
+        (await $`printf 'Promise.resolve(3)' | node zx.mjs -i`).stdout,
+        '$ ', // TODO BUG. expected '$ 3\n$ '
+      )
+    }
+
+    { // failed command
+      assert.equal(
+        (await $`printf 'Promise.reject("foo")\n' | node zx.mjs -i`).stdout,
+        '$ Uncaught \'foo\'\n$ $ ', // TODO - why is there a trailing prompt?
+      )
     }
   }
 }

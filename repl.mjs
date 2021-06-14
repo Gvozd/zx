@@ -6,6 +6,7 @@ import {homedir} from 'os'
 
 const useGlobal = false
 const {eval: _eval} = getDonorReplServer()
+const promisifiedEval = promisify(_eval)
 
 const replServer = replStart({
   prompt: '$ ',
@@ -20,7 +21,13 @@ await promisify(replServer.setupHistory)
   .call(replServer, join(homedir(), '.zx_history'))
 
 async function myEval(cmd, context, filename, callback) {
-  _eval.call(this, cmd, context, filename, callback)
+  try {
+    const result = await promisifiedEval.call(this, cmd, context, filename)
+
+    callback(null, result)
+  } catch (e) {
+    callback(e)
+  }
 }
 
 function getDonorReplServer() {
