@@ -4,7 +4,7 @@ import {Duplex} from 'stream'
 import {join} from 'path'
 import {homedir} from 'os'
 
-const useGlobal = false
+const useGlobal = true
 const {eval: _eval} = getDonorReplServer()
 const promisifiedEval = promisify(_eval)
 

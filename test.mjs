@@ -226,9 +226,17 @@ import {strict as assert} from 'assert'
       }
 
       { // ReferenceError
-        assert( // TODO BUG. the full stack is displayed
-          (await $`printf 'foo()' | node zx.mjs -i`).stdout
-            .includes('ReferenceError: foo is not defined'),
+        assert.equal(// TODO BUG. the excess stack is displayed
+          (await $`printf 'foo()' | node zx.mjs -i`).stdout,
+          [
+            '$ Uncaught ReferenceError: foo is not defined',
+            '    at REPL1:1:1',
+            '    at Script.runInThisContext (vm.js:133:18)',
+            '    at REPLServer.defaultEval (repl.js:486:29)',
+            '    at bound (domain.js:416:15)',
+            '    at REPLServer.runBound (domain.js:427:12)',
+            '$ $ ',
+          ].join('\n'),
         )
       }
     }
