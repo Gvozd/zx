@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import {strict as assert} from 'assert'
+import stripAnsi from 'strip-ansi'
 
 // { // Only stdout is used during command substitution
 //   let hello = await $`echo Error >&2; echo Hello`
@@ -266,6 +267,53 @@ import {strict as assert} from 'assert'
         )
       }
     }
+  }
+
+
+  { // TTY
+    { // history up
+      await testTerminal([
+        ['123 + 1\\n', '124\n$ '],
+        ['456 + 1\\n', '457\n$ '],
+        ['\\e[A', '$ 456 + 1'],
+        ['\\e[A', '$ 123 + 1'],
+        ['\n', '124\n$ '],
+      ])
+    }
+  }
+
+
+  async function testTerminal(commandsAndAsserts) {
+    const sleepCmd = 'sleep 1'
+    const inputGenerator = commandsAndAsserts
+      .reduce((commands, [command]) => {
+          return commands.concat(
+            `echo -en ${$.quote(command)}`,
+            sleepCmd,
+          )
+        },
+        [sleepCmd],
+      )
+      .join(';')
+    const outputExpectation = commandsAndAsserts
+      .reduce((commands, [command, result]) => {
+          return commands.concat(
+            command
+              .replace(/\\n/g, '\n')
+              .replace(/\\e../g, ''),
+            result,
+          )
+        },
+        ['$ '],
+      )
+      // .concat('$ \n')
+      .join('') + '\n'
+
+    const result = (await $`bash -c ${inputGenerator + '\n'} | script -qec "node zx.mjs -i" /dev/null`).stdout
+    assert.equal(
+      stripAnsi(result).replace(/\r*\n/g, '\n'),
+      stripAnsi(outputExpectation).replace(/\r*\n/g, '\n'),
+    )
   }
 }
 

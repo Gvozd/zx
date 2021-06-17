@@ -31,5 +31,8 @@
   ],
   "repository": "google/zx",
   "author": "Anton Medvedev <anton@medv.io>",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "strip-ansi": "^7.0.0"
+  }
 }
