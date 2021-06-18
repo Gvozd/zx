@@ -6,7 +6,6 @@ import {homedir} from 'os'
 
 const useGlobal = true
 const {eval: _eval, _domain} = getDonorReplServer()
-const promisifiedEval = promisify(_eval)
 
 const replServer = replStart({
   prompt: '$ ',
