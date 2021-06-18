@@ -3,12 +3,15 @@ import {promisify} from 'util'
 import {Duplex} from 'stream'
 import {join} from 'path'
 import {homedir} from 'os'
+import SplittedReadable from './SplittedReadable.mjs'
 
 const useGlobal = true
 const {eval: _eval, _domain} = getDonorReplServer()
 
 const replServer = replStart({
   prompt: '$ ',
+  input: new SplittedReadable(),
+  output: process.stdout,
   eval: myEval,
   useGlobal,
 })
