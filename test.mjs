@@ -212,7 +212,7 @@ import {strict as assert} from 'assert'
     { // failed command
       assert.equal(
         (await $`printf 'Promise.reject("foo")\n' | node zx.mjs -i`).stdout,
-        '$ Uncaught \'foo\'\n$ $ ', // TODO - why is there a trailing prompt?
+        '$ Uncaught \'foo\'\n$ ',
       )
     }
     { // long executed promise
@@ -239,7 +239,7 @@ import {strict as assert} from 'assert'
             '    ^^^',
             '',
             'Uncaught SyntaxError: Unexpected identifier',
-            '$ $ ', // TODO - why is there a trailing prompt?
+            '$ ',
           ].join('\n'),
         )
       }
@@ -256,7 +256,7 @@ import {strict as assert} from 'assert'
       { // awaited promise rejection
         assert.equal(
           (await $`printf 'Promise.reject("foo")' | node zx.mjs -i`).stdout,
-          '$ Uncaught \'foo\'\n$ $ ', // TODO - why is there a trailing prompt?
+          '$ Uncaught \'foo\'\n$ ',
         )
       }
       { // not awaited errors at event loop
