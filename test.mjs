@@ -280,6 +280,13 @@ import stripAnsi from 'strip-ansi'
         ['\n', '124\n$ '],
       ])
     }
+
+    { // exit with Ctrl+C
+      await testTerminal([
+        ['\\u0003', '\n(To exit, press Ctrl+C again or Ctrl+D or type .exit)\n$ '],
+        ['\\u0003', ''],
+      ])
+    }
   }
 
 
@@ -298,7 +305,8 @@ import stripAnsi from 'strip-ansi'
           return commands.concat(
             command
               .replace(/\\n/g, '\n')
-              .replace(/\\e../g, ''),
+              .replace(/\\e../g, '')
+              .replace(/\\u0003/g, ''),
             result,
           )
         },
