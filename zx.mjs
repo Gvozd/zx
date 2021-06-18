@@ -30,7 +30,7 @@ try {
   }
 
   if (['-i'].includes(firstArg)) {
-    await import('./repl.mjs')
+    await import('./src/repl.mjs')
   } else if (typeof firstArg === 'undefined' || firstArg[0] === '-') {
     let ok = await scriptFromStdin()
     if (!ok) {
