@@ -192,7 +192,7 @@ import stripAnsi from 'strip-ansi'
       { // with trailing newline
         assert.equal(
           (await $`printf "1 + \n2\n" | node zx.mjs -i`).stdout,
-          '$ ... 2\n$ ', // TODO BUG. expected '$ ... 3\n$ '
+          '$ ... 3\n$ ',
         )
       }
     }
@@ -284,15 +284,13 @@ import stripAnsi from 'strip-ansi'
 
 
   async function testTerminal(commandsAndAsserts) {
-    const sleepCmd = 'sleep 1'
     const inputGenerator = commandsAndAsserts
       .reduce((commands, [command]) => {
           return commands.concat(
             `echo -en ${$.quote(command)}`,
-            sleepCmd,
           )
         },
-        [sleepCmd],
+        ['sleep 1'],
       )
       .join(';')
     const outputExpectation = commandsAndAsserts

@@ -23,6 +23,7 @@ await promisify(replServer.setupHistory)
   .call(replServer, join(homedir(), '.zx_history'))
 
 async function myEval(cmd, context, filename, callback) {
+  replServer.pause()
   try {
     const results = await new Promise(function executor(resolve) {
       _eval.call(this, cmd, context, filename, function (...results) {
@@ -36,6 +37,8 @@ async function myEval(cmd, context, filename, callback) {
     callback(...results)
   } catch (e) {
     callback(e)
+  } finally {
+    replServer.resume()
   }
 }
 

@@ -29,6 +29,16 @@ export default class SplittedReadable extends Readable {
   }
 
   onLine = (line) => {
-    this.push(line)
+    while (true) {
+      const idx = line.indexOf('\n', 0, 'utf8')
+      if (idx === -1) {
+        this.push(line)
+        break
+      } else {
+        this.push(line.slice(0, idx))
+        this.push(line.slice(idx, idx + 1))
+        line = line.slice(idx + 1)
+      }
+    }
   }
 }
