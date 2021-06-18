@@ -199,6 +199,13 @@ import stripAnsi from 'strip-ansi'
   }
 
   { // await async commands
+    { // await keyword
+      assert.equal(
+        (await $`printf 'await Promise.resolve(3)\n' | node zx.mjs -i`).stdout,
+        '$ 3\n$ ',
+      )
+    }
+
     { // success command
       assert.equal(
         (await $`printf 'Promise.resolve(3)\n' | node zx.mjs -i`).stdout,

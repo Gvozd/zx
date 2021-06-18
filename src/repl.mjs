@@ -3,6 +3,7 @@ import {promisify} from 'util'
 import {Duplex} from 'stream'
 import {join} from 'path'
 import {homedir} from 'os'
+import {processTopLevelAwait} from 'node-repl-await'
 import SplittedReadable from './SplittedReadable.mjs'
 
 const useGlobal = true
@@ -26,7 +27,8 @@ async function myEval(cmd, context, filename, callback) {
   replServer.pause()
   try {
     const results = await new Promise(function executor(resolve) {
-      _eval.call(this, cmd, context, filename, function (...results) {
+      const command = processTopLevelAwait(cmd) || cmd
+      _eval.call(this, command, context, filename, function (...results) {
         resolve(Promise.all(results))
       })
     })
